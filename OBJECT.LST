@@ -1,0 +1,71 @@
+Turbo Assembler	 Version 3.1	    06/05/02 10:52:26	    Page 1
+a:\class1.asm
+
+
+
+      1				     ;Program that shows some data and program code
+      2
+      3				     ;---------------------------------------------------------------------------------
+      4	0000			     stacksg segment para stack	'Stack'	     ;define the stack
+      5	0000  20*(0000)			     dw	     32	dup (0)		     ;32 words,	might want to set larger
+      6	0040			     stacksg ends
+      7				     ;---------------------------------------------------------------------------------
+      8	0000			     datasg  segment para 'Data'     ;data segment
+      9	0000  39		     heinz   db	     57
+     10	0001  01		     lonely  db	     1
+     11	0002  48 65 6C 70 20 4D	65+  boys    db	     'Help Me Rhonda'
+     12	      20 52 68 6F 6E 64	61
+     13	0010  0A 0B		     few     db	     10, 11
+     14	0012			     datasg  ends
+     15				     ;---------------------------------------------------------------------------------
+     16	0000			     codesg  segment para 'Code'     ;code segment
+     17	0000			     main    proc    far	     ;main procedure
+     18					     assume  ss:stacksg, ds:datasg, cs:codesg	     ;define segment registers
+     19	0000  B8 0000s			     mov     ax, datasg	     ;initialize data segment register
+     20	0003  8E D8			     mov     ds, ax
+     21
+     22	0005  A0 0000r			     mov     al, heinz
+     23	0008  8A 1E 0001r		     mov     bl, lonely
+     24	000C  02 C3			     add     al, bl
+     25	000E  A2 0000r			     mov     heinz, al
+     26	0011  BB 0010r			     lea     bx, few
+     27	0014  8A 07			     mov     al, [bx]
+     28	0016  43			     inc     bx
+     29	0017  8A 27			     mov     ah, [bx]
+     30	0019  8A 0E 0002r		     mov     cl, boys
+     31	001D  88 0E 0001r		     mov     lonely, cl
+     32
+     33	0021  B8 4C00			     mov     ax, 4c00h	     ;end processing
+     34	0024  CD 21			     int     21h
+     35
+     36	0026			     main    endp	     ;end of procedure
+     37	0026			     codesg  ends	     ;end of code segment
+     38					     end     main    ;end of program
+Turbo Assembler	 Version 3.1	    06/05/02 10:52:26	    Page 2
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "06/05/02"
+??FILENAME			  Text	 "class1  "
+??TIME				  Text	 "10:52:23"
+??VERSION			  Number 030A
+@CPU				  Text	 0101H
+@CURSEG				  Text	 CODESG
+@FILENAME			  Text	 CLASS1
+@WORDSIZE			  Text	 2
+BOYS				  Byte	 DATASG:0002
+FEW				  Byte	 DATASG:0010
+HEINZ				  Byte	 DATASG:0000
+LONELY				  Byte	 DATASG:0001
+MAIN				  Far	 CODESG:0000
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+CODESG				  16  0026 Para	  none	  CODE
+DATASG				  16  0012 Para	  none	  DATA
+STACKSG				  16  0040 Para	  Stack	  STACK
+

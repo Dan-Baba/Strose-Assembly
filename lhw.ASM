@@ -7,7 +7,12 @@ stacksg	ends
 ;---------------------------------------------------------------------------------
 datasg	segment para 'Data'	;data segment	
 	;--- VARIABLES HERE --
-	dan db 12
+	prompt db 'Enter up to 10 characters: $'
+	paralst label byte
+	maxlen db 10
+	actlen db ?
+	dbdata db 11 dup(?)
+	endstring db '$'
 datasg	ends
 ;---------------------------------------------------------------------------------
 codesg	segment para 'Code'	;code segment
@@ -17,7 +22,52 @@ main    proc	far		;main procedure
 	mov	ds, ax
 	mov es, ax
 	;---- CODE HERE ----
-	
+	; Clear Screen
+	mov ah, 06h
+	mov al, 0
+	mov ch, 0
+	mov dh, 24
+	mov cl, 0
+	mov dl, 79
+	mov bh, 01110100b
+	int 10h
+
+	; Move cursor
+	mov ah, 02h
+	mov bh, 0
+	mov dh, 12
+	mov dl, 30
+	int 10h
+
+	; Print prompt
+	mov ah, 09h
+	lea dx, prompt
+	int 21h
+
+	; Get input
+	mov ah, 0ah
+	lea dx, paralst
+	int 21h
+
+	; Move cursor down a line
+	mov ah, 02h
+	mov bh, 0
+	mov dh, 13
+	mov dl, 30
+	int 10h
+
+	; Add terminator
+	mov al, actlen
+	cbw
+	lea bx, dbdata
+	add ax, bx
+	mov byte ptr [ax], '$'
+
+	; Print message
+	mov ah, 09h
+	lea dx, dbdata
+	int 21h
+
 
 
 	;---- END CODE ----
@@ -26,5 +76,7 @@ main    proc	far		;main procedure
        
 main	endp		;end of procedure
 ;new procedures go here
+
+
 codesg	ends		;end of code segment
 	end	main		;end of program

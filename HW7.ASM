@@ -8,12 +8,6 @@ stacksg	ends
 datasg	segment para 'Data'	;data segment	
 	;--- VARIABLES HERE --
 	nums db 34, 12, 9
-	saveAx dw ?
-	saveBx dw ?
-	saveCx dw ?
-	saveDx dw ?
-	saveSi dw ?
-	saveDi dw ?
 datasg	ends
 ;---------------------------------------------------------------------------------
 codesg	segment para 'Code'	;code segment
@@ -24,12 +18,12 @@ main    proc	far		;main procedure
 	mov es, ax
 	;---- CODE HERE ----
 	; Save Registers
-	mov saveAx, ax
-	mov saveBx, bx
-	mov saveCx, cx
-	mov saveDx, dx
-	mov saveSi, si
-	mov saveDi, di
+	push ax
+	push bx
+	push cx
+	push dx
+	push si
+	push di
 
 	lea bx, nums
 	mov ax, 0
@@ -60,12 +54,12 @@ OUTER_LOOP:
 
 END_PROG:
 	; Restore registers
-	mov ax, saveAx
-	mov bx, saveBx
-	mov cx, saveCx
-	mov dx, saveDx
-	mov si, saveSi
-	mov di, saveDi
+	pop di
+	pop si
+	pop dx
+	pop cx
+	pop bx
+	pop ax
 	;---- END CODE ----
 	mov	ax, 4c00h	;end processing
 	int	21h

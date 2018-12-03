@@ -7,7 +7,9 @@ stacksg	ends
 ;---------------------------------------------------------------------------------
 datasg	segment para 'Data'	;data segment	
 	;--- VARIABLES HERE --
-	dan db 12
+	datav db 3, 4, 6, 5, 9, 7, 8, 0
+	sumeven db ?
+	sumodd db ?
 datasg	ends
 ;---------------------------------------------------------------------------------
 codesg	segment para 'Code'	;code segment
@@ -17,14 +19,30 @@ main    proc	far		;main procedure
 	mov	ds, ax
 	mov es, ax
 	;---- CODE HERE ----
-	
+	lea bx, datav
+	mov ax, 0
+	LOOPY:
+	mov dl, [bx]
+	cmp dl, 0
+	jz END_LOOP
+	test dl, 1
+	jnz ADD_ODD
+	add ah, dl
+	jmp END_IF
+	ADD_ODD:
+	add al, dl
+	END_IF:
+	inc bx
+	jmp LOOPY
 
+END_LOOP:
+	mov sumeven, ah
+	mov sumodd, al
 
 	;---- END CODE ----
 	mov	ax, 4c00h	;end processing
 	int	21h
        
 main	endp		;end of procedure
-;new procedures go here
 codesg	ends		;end of code segment
 	end	main		;end of program

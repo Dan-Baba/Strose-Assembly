@@ -10,7 +10,7 @@ datasg	segment para 'Data'	;data segment
 	prompt db 'Enter up to 10 characters: $'
 	paralst label byte
 	maxlen db 10
-	actlen db ?
+	actlen db 0
 	dbdata db 11 dup(?)
 	endstring db '$'
 datasg	ends
@@ -22,6 +22,8 @@ main    proc	far		;main procedure
 	mov	ds, ax
 	mov es, ax
 	;---- CODE HERE ----
+
+	TOPPY:
 	; Clear Screen
 	mov ah, 06h
 	mov al, 0
@@ -31,6 +33,25 @@ main    proc	far		;main procedure
 	mov dl, 79
 	mov bh, 01110100b
 	int 10h
+	
+	; Move to message line
+	mov ah, 02h
+	mov bh, 0
+	mov dh, 13
+	mov dl, 30
+	int 10h
+
+	; Add terminator
+	mov al, actlen
+	cbw
+	lea bx, dbdata
+	add bx, ax
+	mov byte ptr [bx], '$'
+
+	; Print message
+	mov ah, 09h
+	lea dx, dbdata
+	int 21h
 
 	; Move cursor
 	mov ah, 02h
@@ -49,27 +70,13 @@ main    proc	far		;main procedure
 	lea dx, paralst
 	int 21h
 
-	; Move cursor down a line
-	mov ah, 02h
-	mov bh, 0
-	mov dh, 13
-	mov dl, 30
-	int 10h
+	cmp actlen, 0
+	jz ENDDY
 
-	; Add terminator
-	mov al, actlen
-	cbw
-	lea bx, dbdata
-	add ax, bx
-	mov byte ptr [ax], '$'
-
-	; Print message
-	mov ah, 09h
-	lea dx, dbdata
-	int 21h
+	jmp TOPPY
 
 
-
+	ENDDY:
 	;---- END CODE ----
 	mov	ax, 4c00h	;end processing
 	int	21h

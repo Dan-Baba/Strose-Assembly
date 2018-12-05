@@ -9,7 +9,7 @@ datasg	segment para 'Data'	;data segment
 	;--- VARIABLES HERE --
 	prompt db 'Enter up to 10 characters: $'
 	paralst label byte
-	maxlen db 10
+	maxlen db 11 ; maxlen needs to be 11, so we can fit 10 characters (found with testing)
 	actlen db 0
 	dbdata db 11 dup(?)
 	endstring db '$'
@@ -77,6 +77,23 @@ main    proc	far		;main procedure
 
 
 	ENDDY:
+	; Clear Screen
+	mov ah, 06h
+	mov al, 0
+	mov ch, 0
+	mov dh, 24
+	mov cl, 0
+	mov dl, 79
+	mov bh, 00000111b
+	int 10h
+
+	; Move cursor back to top of screen
+	mov ah, 02h
+	mov bh, 0
+	mov dh, 0
+	mov dl, 0
+	int 10h
+
 	;---- END CODE ----
 	mov	ax, 4c00h	;end processing
 	int	21h
